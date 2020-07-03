@@ -1,0 +1,7 @@
+This is a test text.
+This is meant to test using a text to speech program.
+Hello.
+Good morning.
+Good afternoon.
+Good evening.
+Good night.
