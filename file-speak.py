@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
-import sys
+import os
 import subprocess
+import sys
 
 TEMP_FILE_NAME = 'temp.mp3'
 
@@ -14,6 +15,8 @@ def speak(text):
     if exit_code != 0:
         play_command = 'espeak -v en-us+f3 -g 5 "{}"'.format(text)
     subprocess.call(play_command, shell=True)
+    if os.path.exists(TEMP_FILE_NAME):
+        os.remove(TEMP_FILE_NAME)
 
 speak("good morning sir")
 
