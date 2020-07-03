@@ -5,20 +5,16 @@ import subprocess
 
 TEMP_FILE_NAME = 'temp.mp3'
 
-def speak_online(text):
+def speak(text):
     command = 'wget -q --timeout=5 -U Mozilla -O "{}"'\
         ' "https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q={}"'\
         .format(TEMP_FILE_NAME, text)
     exit_code = subprocess.call(command, shell=True)
-    print(exit_code)
-    #play_command = 'vlc --play-and-exit "https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q="'
+    play_command = 'vlc --play-and-exit {}'.format(TEMP_FILE_NAME)
+    if exit_code != 0:
+        play_command = 'espeak -v en-us+f3 -g 5 "{}"'.format(text)
+    subprocess.call(play_command, shell=True)
 
-def speak(text):
-    command = 'espeak -v en-us+f3 -g 5 "{}"'.format(text)
-    subprocess.call(command, shell=True)
-
-#speak("test text")
-
-speak_online("good morning sir")
+speak("good morning sir")
 
 sys.exit()
