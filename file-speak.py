@@ -7,6 +7,9 @@ import sys
 import RPi.GPIO as GPIO
 
 TEMP_FILE_NAME = 'temp.mp3'
+BUTTON_1 = 17
+BUTTON_2 = 5
+BOUNCE_TIME = 500
 
 def speak(text):
     # grab tts file from google
@@ -26,7 +29,15 @@ def speak(text):
         os.remove(TEMP_FILE_NAME)
 
 def main():
-    speak("this is a test phrase")
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup((BUTTON_1, BUTTON_2), GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.add_event_detect(BUTTON_1, GPIO.FALLING, bouncetime=BOUNCE_TIME)
+    GPIO.add_event_detect(BUTTON_2, GPIO.FALLING, bouncetime=BOUNCE_TIME)
+    while True:
+        if GPIO.event_detected(BUTTON_1):
+            speak("you pressed button one")
+        if GPIO.event_detected(BUTTON_2):
+            speak("you pressed button one")
 
 if __name__ == '__main__':
     main()
