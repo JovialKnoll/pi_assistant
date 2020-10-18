@@ -24,6 +24,10 @@ def speak(text):
     if os.path.exists(TEMP_FILE_NAME):
         os.remove(TEMP_FILE_NAME)
 
-speak("good morning sir")
+def main():
+    speak("good morning sir")
+
+if __name__ == '__main__':
+    main()
 
 sys.exit()
