@@ -25,7 +25,7 @@ def speak(text):
         os.remove(TEMP_FILE_NAME)
 
 def main():
-    speak("good morning sir")
+    speak("this is a test phrase")
 
 if __name__ == '__main__':
     main()
