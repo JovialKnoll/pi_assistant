@@ -37,7 +37,7 @@ def main():
         if GPIO.event_detected(BUTTON_1):
             speak("you pressed button one")
         if GPIO.event_detected(BUTTON_2):
-            speak("you pressed button two")
+            break
 
 if __name__ == '__main__':
     main()
