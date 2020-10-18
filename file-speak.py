@@ -21,6 +21,7 @@ def speak(text):
         play_command = 'espeak -v en-us+f3 -g 5 "{}"'.format(text)
     # play sound
     subprocess.call(play_command, shell=True)
+    # clear out temp file
     if os.path.exists(TEMP_FILE_NAME):
         os.remove(TEMP_FILE_NAME)
 
