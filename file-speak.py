@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
+import json
 import os
+import requests
 import subprocess
 import sys
 
@@ -10,6 +12,9 @@ TEMP_FILE_NAME = 'temp.mp3'
 BUTTON_1 = 27
 BUTTON_2 = 5
 BOUNCE_TIME = 1000
+
+with open('keys.json') as file:
+    keys = json.load(file)
 
 def speak(text):
     # grab tts file from google
@@ -27,6 +32,13 @@ def speak(text):
     # clear out temp file
     if os.path.exists(TEMP_FILE_NAME):
         os.remove(TEMP_FILE_NAME)
+
+def get_weather():
+    url = 'http://api.openweathermap.org/data/2.5/weather?' \
+        + 'appid=' + keys["openweathermap"] \
+        + '&q=' + 'London, GB'
+    response = requests.get(url)
+    print(response)
 
 def main():
     GPIO.setmode(GPIO.BCM)
