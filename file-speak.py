@@ -2,9 +2,9 @@
 
 import json
 import os
-import requests
 import subprocess
 import sys
+import urllib2
 
 import RPi.GPIO as GPIO
 
@@ -37,8 +37,10 @@ def get_weather():
     url = 'http://api.openweathermap.org/data/2.5/weather?' \
         + 'appid=' + keys["openweathermap"] \
         + '&q=' + 'London, GB'
-    response = requests.get(url)
-    print(response)
+    request = urllib2.Request(url)
+    response = urllib2.urlopen(request)
+    contents = response.read()
+    print(contents)
 
 def main():
     GPIO.setmode(GPIO.BCM)
