@@ -19,9 +19,11 @@ with open('keys.json') as file:
 
 def speak(text):
     # grab tts file from google
-    command = 'wget --quiet --timeout=5 -U Mozilla -O "{}"'\
-        ' "https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q={}"'\
-        .format(TEMP_FILE_NAME, text)
+    command = 'wget --quiet --timeout=5 -U Mozilla -O "' \
+        + TEMP_FILE_NAME \
+        + '" "https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=' \
+        + text \
+        + '"'
     exit_code = subprocess.call(command, shell=True)
     # play tts file in vlc
     play_command = 'vlc --quiet -I dummy --play-and-exit {}'.format(TEMP_FILE_NAME)
