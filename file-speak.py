@@ -9,7 +9,7 @@ import RPi.GPIO as GPIO
 TEMP_FILE_NAME = 'temp.mp3'
 BUTTON_1 = 27
 BUTTON_2 = 5
-BOUNCE_TIME = 500
+BOUNCE_TIME = 1000
 
 def speak(text):
     # grab tts file from google
