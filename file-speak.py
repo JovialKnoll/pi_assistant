@@ -42,6 +42,9 @@ def get_weather():
     response = urllib2.urlopen(request)
     content = response.read()
     weather_dict = json.loads(content)
+    if weather_dict['cod'] = '404':
+        return "I wasn't able to figure out the weather."
+    # look through weather dict here
     print(weather_dict)
 
 def main():
