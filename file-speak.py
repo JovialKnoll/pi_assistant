@@ -7,7 +7,7 @@ import sys
 import RPi.GPIO as GPIO
 
 TEMP_FILE_NAME = 'temp.mp3'
-BUTTON_1 = 17
+BUTTON_1 = 27
 BUTTON_2 = 5
 BOUNCE_TIME = 500
 
@@ -42,4 +42,5 @@ def main():
 if __name__ == '__main__':
     main()
 
+GPIO.cleanup()
 sys.exit()
