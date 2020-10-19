@@ -40,8 +40,9 @@ def get_weather():
         + '&q=' + urllib.quote('London, GB')
     request = urllib2.Request(url)
     response = urllib2.urlopen(request)
-    contents = response.read()
-    print(contents)
+    content = response.read()
+    weather_dict = json.loads(content)
+    print(weather_dict)
 
 def main():
     GPIO.setmode(GPIO.BCM)
