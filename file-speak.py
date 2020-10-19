@@ -4,6 +4,7 @@ import json
 import os
 import subprocess
 import sys
+import urllib
 import urllib2
 
 import RPi.GPIO as GPIO
@@ -36,7 +37,7 @@ def speak(text):
 def get_weather():
     url = 'http://api.openweathermap.org/data/2.5/weather?' \
         + 'appid=' + keys["openweathermap"] \
-        + '&q=' + 'London, GB'
+        + '&q=' + urllib.quote('London, GB')
     request = urllib2.Request(url)
     response = urllib2.urlopen(request)
     contents = response.read()
