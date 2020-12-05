@@ -70,14 +70,15 @@ def get_weather():
         + "The weather is described as " \
         + description \
         + ".\n"
-    print(output)
+    return output
 
 def main():
-    get_weather()
     GPIO.setmode(GPIO.BCM)
     GPIO.setup((BUTTON_1, BUTTON_2), GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.add_event_detect(BUTTON_1, GPIO.FALLING, bouncetime=BOUNCE_TIME)
     GPIO.add_event_detect(BUTTON_2, GPIO.FALLING, bouncetime=BOUNCE_TIME)
+
+    speak(get_weather())
     #while True:
     #    if GPIO.event_detected(BUTTON_1):
     #        speak("you pressed button one")
