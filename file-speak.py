@@ -36,10 +36,18 @@ def speak(text):
     if os.path.exists(TEMP_FILE_NAME):
         os.remove(TEMP_FILE_NAME)
 
+def get_celsius(kelvin):
+    return kelvin - 273.15
+
+def get_fahrenheit(celsius):
+    return (celsius * 9/5) + 32
+
 def get_weather():
     url = 'http://api.openweathermap.org/data/2.5/weather?' \
-        + 'appid=' + keys["openweathermap"] \
-        + '&q=' + urllib.quote('London, GB')
+        + 'appid=' \
+        + keys["openweathermap"] \
+        + '&q=' \
+        + urllib.quote('London, GB')
     request = urllib2.Request(url)
     response = urllib2.urlopen(request)
     content = response.read()
@@ -47,8 +55,22 @@ def get_weather():
     if weather_dict['cod'] == '404':
         return "I wasn't able to figure out the weather."
     main_dict = weather_dict['main']
-    # look through weather dict here
-    print(main_dict)
+    temp_k = float(main_dict['temp'])
+    temp_c = get_celsius(temp_k)
+    temp_f = get_fahrenheit(temp_c)
+    description = weather_dict['weather'][0]['description']
+    output = "The temperature is " \
+        + str(round(temp_c, 2)) \
+        + " degrees Celsius, " \
+        + str(round(temp_f, 2)) \
+        + " degrees Fahrenheit.\n" \
+        + "The humidity is " \
+        + str(main_dict['humidity']) \
+        + " percent.\n" \
+        + "The weather is described as " \
+        + description \
+        + ".\n"
+    print(output)
 
 def main():
     get_weather()
