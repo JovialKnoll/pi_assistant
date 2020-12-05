@@ -46,8 +46,9 @@ def get_weather():
     weather_dict = json.loads(content)
     if weather_dict['cod'] == '404':
         return "I wasn't able to figure out the weather."
+    main_dict = weather_dict['main']
     # look through weather dict here
-    print(weather_dict)
+    print(main_dict)
 
 def main():
     get_weather()
