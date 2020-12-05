@@ -51,10 +51,10 @@ def get_weather():
 
 def main():
     get_weather()
-    #GPIO.setmode(GPIO.BCM)
-    #GPIO.setup((BUTTON_1, BUTTON_2), GPIO.IN, pull_up_down=GPIO.PUD_UP)
-    #GPIO.add_event_detect(BUTTON_1, GPIO.FALLING, bouncetime=BOUNCE_TIME)
-    #GPIO.add_event_detect(BUTTON_2, GPIO.FALLING, bouncetime=BOUNCE_TIME)
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup((BUTTON_1, BUTTON_2), GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.add_event_detect(BUTTON_1, GPIO.FALLING, bouncetime=BOUNCE_TIME)
+    GPIO.add_event_detect(BUTTON_2, GPIO.FALLING, bouncetime=BOUNCE_TIME)
     #while True:
     #    if GPIO.event_detected(BUTTON_1):
     #        speak("you pressed button one")
