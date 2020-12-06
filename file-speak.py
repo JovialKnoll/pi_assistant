@@ -59,14 +59,21 @@ def get_weather(location):
     temp_c = get_celsius(temp_k)
     temp_f = get_fahrenheit(temp_c)
     description = weather_dict['weather'][0]['description']
+    wind_speed = weather_dict['wind']['speed']
     output = "The temperature is " \
         + str(round(temp_c, 2)) \
         + " degrees Celsius, " \
         + str(round(temp_f, 2)) \
         + " degrees Fahrenheit.\n" \
+
         + "The humidity is " \
         + str(main_dict['humidity']) \
         + " percent.\n" \
+
+        + "Wind speed is " \
+        + str(wind_speed) \
+        + " meters per second.\n" \
+
         + "The weather is described as " \
         + description \
         + ".\n"
