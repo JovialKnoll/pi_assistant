@@ -65,15 +65,12 @@ def get_weather(location):
         + " degrees Celsius, " \
         + str(round(temp_f, 2)) \
         + " degrees Fahrenheit.\n" \
-
         + "The humidity is " \
         + str(main_dict['humidity']) \
         + " percent.\n" \
-
         + "Wind speed is " \
         + str(wind_speed) \
         + " meters per second.\n" \
-
         + "The weather is described as " \
         + description \
         + ".\n"
@@ -97,7 +94,10 @@ def main():
     GPIO.add_event_detect(BUTTON_1, GPIO.FALLING, bouncetime=BOUNCE_TIME)
     GPIO.add_event_detect(BUTTON_2, GPIO.FALLING, bouncetime=BOUNCE_TIME)
 
-    speak(get_weather(get_location()))
+    location = get_location()
+    weather = get_weather()
+    print(weather)
+    speak(weather)
     #while True:
     #    if GPIO.event_detected(BUTTON_1):
     #        speak("you pressed button one")
