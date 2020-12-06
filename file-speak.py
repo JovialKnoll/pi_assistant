@@ -95,7 +95,7 @@ def main():
     GPIO.add_event_detect(BUTTON_2, GPIO.FALLING, bouncetime=BOUNCE_TIME)
 
     location = get_location()
-    weather = get_weather()
+    weather = get_weather(location)
     print(weather)
     speak(weather)
     #while True:
