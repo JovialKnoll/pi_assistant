@@ -64,16 +64,16 @@ def get_weather(location):
         + str(round(temp_c, 2)) \
         + " degrees Celsius, " \
         + str(round(temp_f, 2)) \
-        + " degrees Fahrenheit.\n" \
-        + "The humidity is " \
+        + " degrees Fahrenheit." \
+        + "\nThe humidity is " \
         + str(main_dict['humidity']) \
-        + " percent.\n" \
-        + "Wind speed is " \
+        + " percent." \
+        + "\nWind speed is " \
         + str(wind_speed) \
-        + " meters per second.\n" \
-        + "The weather is described as " \
+        + " meters per second." \
+        + "\nThe weather is described as " \
         + description \
-        + ".\n"
+        + "."
     return output
 
 def get_location():
