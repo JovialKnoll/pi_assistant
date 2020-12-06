@@ -42,12 +42,12 @@ def get_celsius(kelvin):
 def get_fahrenheit(celsius):
     return (celsius * 9/5) + 32
 
-def get_weather():
+def get_weather(location):
     url = 'https://api.openweathermap.org/data/2.5/weather?' \
         + 'appid=' \
         + keys['openweathermap'] \
         + '&q=' \
-        + urllib.quote('London, GB')
+        + urllib.quote(location)
     request = urllib2.Request(url)
     response = urllib2.urlopen(request)
     content = response.read()
@@ -72,7 +72,7 @@ def get_weather():
         + ".\n"
     return output
 
-def get_ip_info():
+def get_location():
     url = 'https://ipinfo.io/?' \
         + 'token=' \
         + keys['ipinfo']
@@ -80,7 +80,9 @@ def get_ip_info():
     response = urllib2.urlopen(request)
     content = response.read()
     ipinfo_dict = json.loads(content)
-    print(ipinfo_dict)
+    return ipinfo_dict['city'] \
+        + ", " \
+        + ipinfo_dict['country']
 
 def main():
     GPIO.setmode(GPIO.BCM)
@@ -88,8 +90,7 @@ def main():
     GPIO.add_event_detect(BUTTON_1, GPIO.FALLING, bouncetime=BOUNCE_TIME)
     GPIO.add_event_detect(BUTTON_2, GPIO.FALLING, bouncetime=BOUNCE_TIME)
 
-    speak(get_weather())
-    get_ip_info()
+    speak(get_weather(get_location()))
     #while True:
     #    if GPIO.event_detected(BUTTON_1):
     #        speak("you pressed button one")
