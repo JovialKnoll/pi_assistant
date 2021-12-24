@@ -30,7 +30,7 @@ def speak(text):
         if exit_code != 0:
             play_command = 'espeak -v en-us+f3 -g 5 "{}"'.format(text)
         # play sound
-        subprocess.call(play_command, shell=True)
+        subprocess.call(play_command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
         # clear out temp file
     finally:
         if os.path.exists(TEMP_FILE_NAME):
@@ -61,8 +61,8 @@ The temperature is {} degrees Celsius, {} degrees Fahrenheit.
 The humidity is {} percent.
 Wind speed is {} meters per second.
 The weather is described as {}.""".format(
-        round(temp_c, 2),
-        round(temp_f, 2),
+        round(temp_c, 1),
+        round(temp_f, 1),
         weather_dict['main']['humidity'],
         weather_dict['wind']['speed'],
         weather_dict['weather'][0]['description']
