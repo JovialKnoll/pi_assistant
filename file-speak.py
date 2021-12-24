@@ -7,13 +7,12 @@ import sys
 import urllib.parse
 import urllib.request
 
+
 TEMP_FILE_NAME = 'temp.mp3'
-BUTTON_1 = 27
-BUTTON_2 = 5
-BOUNCE_TIME = 1000
 
 with open('keys.json') as file:
     keys = json.load(file)
+
 
 def speak(text):
     try:
@@ -36,11 +35,14 @@ def speak(text):
         if os.path.exists(TEMP_FILE_NAME):
             os.remove(TEMP_FILE_NAME)
 
+
 def get_celsius(kelvin):
     return kelvin - 273.15
 
+
 def get_fahrenheit(celsius):
     return (celsius * 9/5) + 32
+
 
 def get_weather(location):
     url = 'https://api.openweathermap.org/data/2.5/weather?appid={}&q={}'.format(
@@ -68,6 +70,7 @@ The weather is described as {}.""".format(
         weather_dict['weather'][0]['description']
     )
 
+
 def get_location():
     url = 'https://ipinfo.io/?token={}'.format(
         keys['ipinfo']
@@ -81,24 +84,33 @@ def get_location():
         ipinfo_dict['country']
     )
 
-def main():
+
+def get_information():
     location = get_location()
     weather = get_weather(location)
-    output = """
+    return """
 You are in or near {}.
 {}""".format(
         location,
         weather
     )
-    print(output)
-    speak(output)
+
+
+def tell_information():
+    info = get_information()
+    print(info)
+    speak(info)
+
+
+def main():
+    tell_information()
     #while True:
     #    if GPIO.event_detected(BUTTON_1):
     #        speak("you pressed button one")
     #    if GPIO.event_detected(BUTTON_2):
     #        break
 
+
 if __name__ == '__main__':
     main()
-
 sys.exit()
