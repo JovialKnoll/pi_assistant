@@ -1,13 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import json
 import os
 import subprocess
 import sys
-import urllib
-import urllib2
-
-import RPi.GPIO as GPIO
+import urllib.parse
+import urllib.request
 
 TEMP_FILE_NAME = 'temp.mp3'
 BUTTON_1 = 27
@@ -47,9 +45,9 @@ def get_weather(location):
         + 'appid=' \
         + keys['openweathermap'] \
         + '&q=' \
-        + urllib.quote(location)
-    request = urllib2.Request(url)
-    response = urllib2.urlopen(request)
+        + urllib.parse.quote(location)
+    request = urllib.request.Request(url)
+    response = urllib.request.urlopen(request)
     content = response.read()
     weather_dict = json.loads(content)
     if weather_dict['cod'] == '404':
@@ -60,7 +58,7 @@ def get_weather(location):
     temp_f = get_fahrenheit(temp_c)
     description = weather_dict['weather'][0]['description']
     wind_speed = weather_dict['wind']['speed']
-    output = "The temperature is " \
+    output = "\nThe temperature is " \
         + str(round(temp_c, 2)) \
         + " degrees Celsius, " \
         + str(round(temp_f, 2)) \
@@ -80,8 +78,8 @@ def get_location():
     url = 'https://ipinfo.io/?' \
         + 'token=' \
         + keys['ipinfo']
-    request = urllib2.Request(url)
-    response = urllib2.urlopen(request)
+    request = urllib.request.Request(url)
+    response = urllib.request.urlopen(request)
     content = response.read()
     ipinfo_dict = json.loads(content)
     return ipinfo_dict['city'] \
@@ -89,11 +87,6 @@ def get_location():
         + ipinfo_dict['country']
 
 def main():
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup((BUTTON_1, BUTTON_2), GPIO.IN, pull_up_down=GPIO.PUD_UP)
-    GPIO.add_event_detect(BUTTON_1, GPIO.FALLING, bouncetime=BOUNCE_TIME)
-    GPIO.add_event_detect(BUTTON_2, GPIO.FALLING, bouncetime=BOUNCE_TIME)
-
     location = get_location()
     weather = get_weather(location)
     print(weather)
@@ -107,5 +100,4 @@ def main():
 if __name__ == '__main__':
     main()
 
-GPIO.cleanup()
 sys.exit()
