@@ -53,27 +53,20 @@ def get_weather(location):
     weather_dict = json.loads(content)
     if weather_dict['cod'] == '404':
         return "I wasn't able to figure out the weather."
-    main_dict = weather_dict['main']
-    temp_k = float(main_dict['temp'])
+    temp_k = float(weather_dict['main']['temp'])
     temp_c = get_celsius(temp_k)
     temp_f = get_fahrenheit(temp_c)
-    description = weather_dict['weather'][0]['description']
-    wind_speed = weather_dict['wind']['speed']
-    output = "\nThe temperature is " \
-        + str(round(temp_c, 2)) \
-        + " degrees Celsius, " \
-        + str(round(temp_f, 2)) \
-        + " degrees Fahrenheit." \
-        + "\nThe humidity is " \
-        + str(main_dict['humidity']) \
-        + " percent." \
-        + "\nWind speed is " \
-        + str(wind_speed) \
-        + " meters per second." \
-        + "\nThe weather is described as " \
-        + description \
-        + "."
-    return output
+    return """
+The temperature is {} degrees Celsius, {} degrees Fahrenheit.
+The humidity is {} percent.
+Wind speed is {} meters per second.
+The weather is described as {}.""".format(
+        round(temp_c, 2),
+        round(temp_f, 2),
+        weather_dict['main']['humidity'],
+        weather_dict['wind']['speed'],
+        weather_dict['weather'][0]['description']
+    )
 
 def get_location():
     url = 'https://ipinfo.io/?token={}'.format(
@@ -91,8 +84,14 @@ def get_location():
 def main():
     location = get_location()
     weather = get_weather(location)
-    print(weather)
-    speak(weather)
+    output = """
+You are in or near {}.
+{}""".format(
+        location,
+        weather
+    )
+    print(output)
+    speak(output)
     #while True:
     #    if GPIO.event_detected(BUTTON_1):
     #        speak("you pressed button one")
