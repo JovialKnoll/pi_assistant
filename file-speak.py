@@ -16,23 +16,25 @@ with open('keys.json') as file:
     keys = json.load(file)
 
 def speak(text):
-    # grab tts file from google
-    command = 'wget --quiet --timeout=5 -U Mozilla -O "' \
-        + TEMP_FILE_NAME \
-        + '" "https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q=' \
-        + text \
-        + '"'
-    exit_code = subprocess.call(command, shell=True)
-    # play tts file in vlc
-    play_command = 'vlc --quiet -I dummy --play-and-exit {}'.format(TEMP_FILE_NAME)
-    # if grabbing file failed, instead use espeak
-    if exit_code != 0:
-        play_command = 'espeak -v en-us+f3 -g 5 "{}"'.format(text)
-    # play sound
-    subprocess.call(play_command, shell=True)
-    # clear out temp file
-    if os.path.exists(TEMP_FILE_NAME):
-        os.remove(TEMP_FILE_NAME)
+    try:
+        # grab tts file from google
+        command = ('wget --quiet --timeout=5 -U Mozilla -O "{}"'
+        ' "https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q={}"').format(
+            TEMP_FILE_NAME,
+            text
+        )
+        exit_code = subprocess.call(command, shell=True)
+        # play tts file in vlc
+        play_command = 'vlc --quiet -I dummy --play-and-exit {}'.format(TEMP_FILE_NAME)
+        # if grabbing file failed, instead use espeak
+        if exit_code != 0:
+            play_command = 'espeak -v en-us+f3 -g 5 "{}"'.format(text)
+        # play sound
+        subprocess.call(play_command, shell=True)
+        # clear out temp file
+    finally:
+        if os.path.exists(TEMP_FILE_NAME):
+            os.remove(TEMP_FILE_NAME)
 
 def get_celsius(kelvin):
     return kelvin - 273.15
@@ -41,11 +43,10 @@ def get_fahrenheit(celsius):
     return (celsius * 9/5) + 32
 
 def get_weather(location):
-    url = 'https://api.openweathermap.org/data/2.5/weather?' \
-        + 'appid=' \
-        + keys['openweathermap'] \
-        + '&q=' \
-        + urllib.parse.quote(location)
+    url = 'https://api.openweathermap.org/data/2.5/weather?appid={}&q={}'.format(
+        keys['openweathermap'],
+        urllib.parse.quote(location)
+    )
     request = urllib.request.Request(url)
     response = urllib.request.urlopen(request)
     content = response.read()
@@ -75,16 +76,17 @@ def get_weather(location):
     return output
 
 def get_location():
-    url = 'https://ipinfo.io/?' \
-        + 'token=' \
-        + keys['ipinfo']
+    url = 'https://ipinfo.io/?token={}'.format(
+        keys['ipinfo']
+    )
     request = urllib.request.Request(url)
     response = urllib.request.urlopen(request)
     content = response.read()
     ipinfo_dict = json.loads(content)
-    return ipinfo_dict['city'] \
-        + ", " \
-        + ipinfo_dict['country']
+    return '{}, {}'.format(
+        ipinfo_dict['city'],
+        ipinfo_dict['country']
+    )
 
 def main():
     location = get_location()
