@@ -4,7 +4,7 @@ sudo apt update;
 sudo apt full-upgrade;
 sudo apt install wget vlc espeak;
 sudo apt autoremove;
-curl -sS https://get.pimoroni.com/speakerphat | bash
+curl -sS https://get.pimoroni.com/speakerphat | bash;
 pip install --upgrade pip;
 pip install pynput;
 schedule="@reboot ~/git/pi_assistant/assistant.py"
