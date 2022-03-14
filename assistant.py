@@ -7,6 +7,8 @@ import sys
 import urllib.parse
 import urllib.request
 
+from pynput.keyboard import Key, Listener
+
 
 TEMP_FILE_NAME = 'temp.mp3'
 
@@ -102,13 +104,16 @@ def tell_information():
     speak(info)
 
 
+def handle_key(key):
+    if format(key) == "'1'":
+        tell_information()
+        return False
+
+
 def main():
-    tell_information()
-    #while True:
-    #    if GPIO.event_detected(BUTTON_1):
-    #        speak("you pressed button one")
-    #    if GPIO.event_detected(BUTTON_2):
-    #        break
+    while True:
+        with Listener(on_press = handle_key) as listener:
+            listener.join()
 
 
 if __name__ == '__main__':
