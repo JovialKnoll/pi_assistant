@@ -1,4 +1,10 @@
 #!/bin/bash
 
 sudo apt update;
+sudo apt full-upgrade;
 sudo apt install wget vlc espeak;
+sudo apt autoremove;
+pip install --upgrade pip;
+pip install pynput;
+schedule="@reboot ~/git/pi_assistant/assistant.py"
+(crontab -l; echo "$schedule" ) | crontab -u -
