@@ -4,14 +4,15 @@ import json
 import os
 import subprocess
 import sys
+import time
 import urllib.parse
 import urllib.request
 
-from pynput.keyboard import Key, Listener
+from keyboard
 
 
 TEMP_FILE_NAME = 'temp.mp3'
-
+keys = None
 with open('keys.json') as file:
     keys = json.load(file)
 
@@ -105,15 +106,13 @@ def tell_information():
 
 
 def handle_key(key):
-    if format(key) == "'1'":
-        tell_information()
-        return False
+    print(key)
 
 
 def main():
+    keyboard.on_press(handle_key)
     while True:
-        with Listener(on_press = handle_key) as listener:
-            listener.join()
+        time.sleep(1)
 
 
 if __name__ == '__main__':

@@ -6,7 +6,7 @@ sudo apt install -y wget vlc espeak;
 sudo apt autoremove -y;
 curl -sS https://get.pimoroni.com/speakerphat | bash;
 pip install --upgrade pip;
-pip install pynput;
+pip install -r requirements.txt;
 echo '' >> ~/.bashrc
 echo '~/git/pi_assistant/assistant.py' >> ~/.bashrc
 echo 'set pi to boot to command line logged in'
