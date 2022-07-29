@@ -8,7 +8,7 @@ import time
 import urllib.parse
 import urllib.request
 
-from keyboard
+import keyboard
 
 
 TEMP_FILE_NAME = 'temp.mp3'
