@@ -92,18 +92,17 @@ def get_location():
 def get_information():
     location = get_location()
     weather = get_weather(location)
-    return """
-You are in or near {}.
-{}""".format(
-        location,
-        weather
+    return (
+        "You are in or near {}.".format(location),
+        weather,
     )
 
 
 def tell_information():
     info = get_information()
-    print(info)
-    speak(info)
+    for section in info:
+        print(section)
+        speak(section)
 
 
 def handle_key(key):
