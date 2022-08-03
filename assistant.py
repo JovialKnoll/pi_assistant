@@ -11,6 +11,7 @@ import urllib.request
 import keyboard
 
 
+SHUTDOWN_COMMAND = "sudo shutdown -P now"
 TEMP_FILE_NAME = 'temp.mp3'
 keys = None
 with open('keys.json') as file:
@@ -107,13 +108,13 @@ def tell_information():
 
 def handle_key(key):
     if key.name == '1':
-        print("pressed button 1")
+        tell_information()
     elif key.name == '2':
-        print("pressed button 2")
+        print("function 2")
     elif key.name == '3':
-        print("pressed button 3")
+        print("function 3")
     elif key.name == '4':
-        print("pressed button 4")
+        subprocess.call(SHUTDOWN_COMMAND, shell=True)
 
 
 def main():
