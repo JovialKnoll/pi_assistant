@@ -8,4 +8,4 @@ curl -sS https://get.pimoroni.com/speakerphat | bash;
 sudo pip install --upgrade pip;
 sudo pip install -r requirements.txt;
 echo "add the following to sudo crontab"
-echo "@reboot /home/pi/git/pi_assistant | at now + 1 minute"
+echo "@reboot /home/pi/git/pi_assistant/assistant.py | at now + 1 minute"
