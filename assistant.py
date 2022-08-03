@@ -106,13 +106,13 @@ def tell_information():
 
 
 def handle_key(key):
-    if key.name == 1:
+    if key.name == '1':
         print("pressed button 1")
-    elif key.name == 2:
+    elif key.name == '2':
         print("pressed button 2")
-    elif key.name == 3:
+    elif key.name == '3':
         print("pressed button 3")
-    elif key.name == 4:
+    elif key.name == '4':
         print("pressed button 4")
 
 
