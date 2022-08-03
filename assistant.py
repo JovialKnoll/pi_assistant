@@ -20,6 +20,7 @@ with open('keys.json') as file:
 
 def speak(text):
     try:
+        print(text)
         # grab tts file from google
         command = ('wget --quiet --timeout=5 -U Mozilla -O "{}"'
         ' "https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q={}"').format(
@@ -101,7 +102,6 @@ def get_information():
 def tell_information():
     info = get_information()
     for section in info:
-        print(section)
         speak(section)
 
 
