@@ -4,6 +4,11 @@ sudo apt update -y;
 sudo apt full-upgrade -y;
 sudo apt install -y wget vlc espeak at;
 sudo apt autoremove -y;
+cd ~/git
+git clone https://github.com/WiringPi/WiringPi.git
+cd WiringPi
+./build
+cd ~
 curl -sS https://get.pimoroni.com/speakerphat | bash;
 sudo pip install --upgrade pip;
 sudo pip install -r requirements.txt;
