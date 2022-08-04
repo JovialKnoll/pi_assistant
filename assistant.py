@@ -13,6 +13,8 @@ import keyboard
 
 SHUTDOWN_COMMAND = "sudo shutdown -P now"
 TEMP_FILE_NAME = 'temp.mp3'
+KEY_IPINFO = 'ipinfo'
+KEY_OPENWEATHERMAP = 'openweathermap'
 keys = None
 with open('keys.json') as file:
     keys = json.load(file)
@@ -51,7 +53,7 @@ def get_fahrenheit(celsius):
 
 def get_weather(location):
     url = 'https://api.openweathermap.org/data/2.5/weather?appid={}&q={}'.format(
-        keys['openweathermap'],
+        keys[KEY_OPENWEATHERMAP],
         urllib.parse.quote(location)
     )
     request = urllib.request.Request(url)
@@ -78,7 +80,7 @@ The weather is described as {}.""".format(
 
 def get_location():
     url = 'https://ipinfo.io/?token={}'.format(
-        keys['ipinfo']
+        keys[KEY_IPINFO]
     )
     request = urllib.request.Request(url)
     response = urllib.request.urlopen(request)
