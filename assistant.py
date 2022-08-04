@@ -11,7 +11,7 @@ import urllib.request
 import keyboard
 
 
-SHUTDOWN_COMMAND = "sudo shutdown -P now"
+SHUTDOWN_COMMAND = 'sudo shutdown -P now'
 TEMP_FILE_NAME = 'temp.mp3'
 KEY_IPINFO = 'ipinfo'
 KEY_OPENWEATHERMAP = 'openweathermap'
