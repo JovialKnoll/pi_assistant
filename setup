@@ -2,7 +2,7 @@
 
 sudo apt update -y;
 sudo apt full-upgrade -y;
-sudo apt install -y wget vlc espeak at;
+sudo apt install -y wget vlc mpg123 espeak at;
 sudo apt autoremove -y;
 cd ~/git
 git clone https://github.com/WiringPi/WiringPi.git

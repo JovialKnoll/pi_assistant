@@ -31,12 +31,12 @@ def speak(text):
         )
         exit_code = subprocess.call(command, shell=True)
         # play tts file in vlc
-        play_command = 'vlc --quiet -I dummy --play-and-exit {}'.format(TEMP_FILE_NAME)
+        play_command = 'mpg123 {}'.format(TEMP_FILE_NAME)
         # if grabbing file failed, instead use espeak
         if exit_code != 0:
             play_command = 'espeak -v en-us+f3 -g 5 "{}"'.format(text)
         # play sound
-        subprocess.call(play_command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
+        subprocess.call(play_command, shell=True)
         # clear out temp file
     finally:
         if os.path.exists(TEMP_FILE_NAME):
