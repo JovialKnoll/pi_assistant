@@ -120,8 +120,11 @@ def handle_key(key):
 
 def main():
     keyboard.on_press(handle_key)
-    while True:
-        time.sleep(1)
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        pass
 
 
 if __name__ == '__main__':
