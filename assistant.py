@@ -12,11 +12,13 @@ import keyboard
 
 
 SHUTDOWN_COMMAND = 'sudo shutdown -P now'
-TEMP_FILE_NAME = 'temp.mp3'
+SRC_DIRECTORY = os.path.dirname(__file__)
+KEY_FILE = os.path.join(SRC_DIRECTORY, 'keys.json')
+TEMP_FILE_NAME = os.path.join(SRC_DIRECTORY, 'temp.mp3')
 KEY_IPINFO = 'ipinfo'
 KEY_OPENWEATHERMAP = 'openweathermap'
 keys = None
-with open('keys.json') as file:
+with open(KEY_FILE) as file:
     keys = json.load(file)
 
 
