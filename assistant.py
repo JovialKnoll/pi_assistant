@@ -22,6 +22,11 @@ with open(KEY_FILE) as file:
     keys = json.load(file)
 
 
+def clearTempFile():
+    if os.path.exists(TEMP_FILE_NAME):
+        os.remove(TEMP_FILE_NAME)
+
+
 def speak(text):
     try:
         print(text)
@@ -41,19 +46,18 @@ def speak(text):
         subprocess.call(play_command, shell=True)
         # clear out temp file
     finally:
-        if os.path.exists(TEMP_FILE_NAME):
-            os.remove(TEMP_FILE_NAME)
+        clearTempFile()
 
 
-def get_celsius(kelvin):
+def getCelsius(kelvin):
     return kelvin - 273.15
 
 
-def get_fahrenheit(celsius):
+def getFahrenheit(celsius):
     return (celsius * 9/5) + 32
 
 
-def get_weather(location):
+def getWeather(location):
     url = 'https://api.openweathermap.org/data/2.5/weather?appid={}&q={}'.format(
         keys[KEY_OPENWEATHERMAP],
         urllib.parse.quote(location)
@@ -65,8 +69,8 @@ def get_weather(location):
     if weather_dict['cod'] == '404':
         return "I wasn't able to figure out the weather."
     temp_k = float(weather_dict['main']['temp'])
-    temp_c = get_celsius(temp_k)
-    temp_f = get_fahrenheit(temp_c)
+    temp_c = getCelsius(temp_k)
+    temp_f = getFahrenheit(temp_c)
     return """
 The temperature is {} degrees Celsius, {} degrees Fahrenheit.
 The humidity is {} percent.
@@ -80,7 +84,7 @@ The weather is described as {}.""".format(
     )
 
 
-def get_location():
+def getLocation():
     url = 'https://ipinfo.io/?token={}'.format(
         keys[KEY_IPINFO]
     )
@@ -94,24 +98,24 @@ def get_location():
     )
 
 
-def get_information():
-    location = get_location()
-    weather = get_weather(location)
+def getInformation():
+    location = getLocation()
+    weather = getWeather(location)
     return (
         "You are in or near {}.".format(location),
         weather,
     )
 
 
-def tell_information():
-    info = get_information()
+def tellInformation():
+    info = getInformation()
     for section in info:
         speak(section)
 
 
-def handle_key(key):
+def handleKey(key):
     if key.name == '1':
-        tell_information()
+        tellInformation()
     elif key.name == '2':
         print("function 2")
     elif key.name == '3':
@@ -121,12 +125,14 @@ def handle_key(key):
 
 
 def main():
-    keyboard.on_press(handle_key)
+    keyboard.on_press(handleKey)
     try:
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
         pass
+    finally:
+        clearTempFile()
 
 
 if __name__ == '__main__':
