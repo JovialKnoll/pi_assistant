@@ -7,8 +7,10 @@ import sys
 import time
 import urllib.parse
 import urllib.request
+from datetime import datetime
 
 import keyboard
+from pytz import timezone
 
 
 SHUTDOWN_COMMAND = 'sudo shutdown -P now'
@@ -29,7 +31,6 @@ def clearTempFile():
 
 def speak(text):
     try:
-        print(text)
         # grab tts file from google
         command = ('wget --quiet --timeout=5 -U Mozilla -O "{}"'
         ' "https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q={}"').format(
@@ -92,14 +93,25 @@ def getLocation():
     response = urllib.request.urlopen(request)
     content = response.read()
     ipinfo_dict = json.loads(content)
-    return '{}, {}'.format(
-        ipinfo_dict['city'],
-        ipinfo_dict['country']
+    return (
+        '{}, {}'.format(
+            ipinfo_dict['city'],
+            ipinfo_dict['country']
+        ),
+        ipinfo_dict['timezone'],
     )
 
 
+def getTime():
+    location, time_zone = getLocation()
+    time_utc = datetime.now(timezone('UTC'))
+    time_here = time_utc.astimezone(timezone(time_zone))
+    time_str = time_here.strftime('%I:%M%p')
+    return "It is now {}".format(time_str)
+
+
 def getInformation():
-    location = getLocation()
+    location, time_zone = getLocation()
     weather = getWeather(location)
     return (
         "You are in or near {}.".format(location),
@@ -107,19 +119,16 @@ def getInformation():
     )
 
 
-def tellInformation():
-    info = getInformation()
-    for section in info:
-        speak(section)
-
-
 def handleKey(key):
     if key.name == '1':
-        tellInformation()
+        time = getTime()
+        speak(time)
     elif key.name == '2':
-        print("function 2")
+        info = getInformation()
+        for section in info:
+            speak(section)
     elif key.name == '3':
-        print("function 3")
+        pass
     elif key.name == '4':
         subprocess.call(SHUTDOWN_COMMAND, shell=True)
 
