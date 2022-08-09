@@ -22,6 +22,7 @@ KEY_OPENWEATHERMAP = 'openweathermap'
 keys = None
 with open(KEY_FILE) as file:
     keys = json.load(file)
+latest_time = datetime.now().timestamp()
 
 
 def clearTempFile():
@@ -120,7 +121,10 @@ def getInformation():
 
 
 def handleKey(key):
-    if key.name == '1':
+    global latest_time
+    if key.time < latest_time:
+        return
+    elif key.name == '1':
         time = getTime()
         speak(time)
     elif key.name == '2':
@@ -131,6 +135,7 @@ def handleKey(key):
         pass
     elif key.name == '4':
         subprocess.call(SHUTDOWN_COMMAND, shell=True)
+    latest_time = datetime.now().timestamp()
 
 
 def main():
