@@ -14,7 +14,7 @@ import keyboard
 SHUTDOWN_COMMAND = 'sudo shutdown -P now'
 SRC_DIRECTORY = os.path.dirname(__file__)
 KEY_FILE = os.path.join(SRC_DIRECTORY, 'keys.json')
-TEMP_FILE_NAME = os.path.join(SRC_DIRECTORY, 'temp.mp3')
+TEMP_FILE = os.path.join(SRC_DIRECTORY, 'temp.mp3')
 KEY_IPINFO = 'ipinfo'
 KEY_OPENWEATHERMAP = 'openweathermap'
 keys = None
@@ -23,8 +23,8 @@ with open(KEY_FILE) as file:
 
 
 def clearTempFile():
-    if os.path.exists(TEMP_FILE_NAME):
-        os.remove(TEMP_FILE_NAME)
+    if os.path.exists(TEMP_FILE):
+        os.remove(TEMP_FILE)
 
 
 def speak(text):
@@ -33,12 +33,12 @@ def speak(text):
         # grab tts file from google
         command = ('wget --quiet --timeout=5 -U Mozilla -O "{}"'
         ' "https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q={}"').format(
-            TEMP_FILE_NAME,
+            TEMP_FILE,
             text
         )
         exit_code = subprocess.call(command, shell=True)
         # play tts file in vlc
-        play_command = 'mpg123 {}'.format(TEMP_FILE_NAME)
+        play_command = 'mpg123 {}'.format(TEMP_FILE)
         # if grabbing file failed, instead use espeak
         if exit_code != 0:
             play_command = 'espeak -v en-us+f3 -g 5 "{}"'.format(text)
