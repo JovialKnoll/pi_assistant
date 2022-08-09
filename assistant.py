@@ -22,7 +22,7 @@ KEY_OPENWEATHERMAP = 'openweathermap'
 keys = None
 with open(KEY_FILE) as file:
     keys = json.load(file)
-latest_time = datetime.now().timestamp()
+latest_time = 0
 
 
 def clearTempFile():
