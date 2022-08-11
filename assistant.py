@@ -120,7 +120,7 @@ def getInformation():
     )
 
 
-def handleKey(key):
+def handleEvent(key):
     global latest_time
     if key.time < latest_time:
         return
@@ -139,10 +139,10 @@ def handleKey(key):
 
 
 def main():
-    keyboard.on_press(handleKey)
     try:
         while True:
-            time.sleep(1)
+            event = keyboard.read_event()
+            handleEvent(event)
     except KeyboardInterrupt:
         pass
     finally:
