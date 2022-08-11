@@ -132,7 +132,7 @@ def handleEvent(key):
         for section in info:
             speak(section)
     elif key.name == '3':
-        pass
+        speak("Don't touch me there.")
     elif key.name == '4':
         subprocess.call(SHUTDOWN_COMMAND, shell=True)
     latest_time = datetime.now().timestamp()
