@@ -2,7 +2,7 @@
 
 sudo apt update -y;
 sudo apt full-upgrade -y;
-sudo apt install -y wget mpg123 espeak;
+sudo apt install -y wget mpg123 espeak at;
 sudo apt autoremove -y;
 cd ~/git;
 git clone https://github.com/WiringPi/WiringPi.git;
@@ -13,4 +13,4 @@ curl -sS https://get.pimoroni.com/speakerphat | bash;
 sudo pip install --upgrade pip;
 sudo pip install -r requirements.txt;
 echo "add the following to sudo crontab";
-echo "@reboot /home/pi/git/pi_assistant/assistant.py";
+echo "@reboot /home/pi/git/pi_assistant/assistant.py | at now + 1 minute";
