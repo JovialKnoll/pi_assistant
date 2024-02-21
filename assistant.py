@@ -1,54 +1,22 @@
 #!/usr/bin/env python3
 
-import json
-import os
-import subprocess
 import sys
-import time
+import os
+import json
 import urllib.parse
 import urllib.request
 from datetime import datetime
 
-import keyboard
 from pytz import timezone
 
 
-SHUTDOWN_COMMAND = 'sudo shutdown -P now'
 SRC_DIRECTORY = os.path.dirname(__file__)
 KEY_FILE = os.path.join(SRC_DIRECTORY, 'keys.json')
-TEMP_FILE = os.path.join(SRC_DIRECTORY, 'temp.mp3')
 KEY_IPINFO = 'ipinfo'
 KEY_OPENWEATHERMAP = 'openweathermap'
 keys = None
 with open(KEY_FILE) as file:
     keys = json.load(file)
-latest_time = 0
-
-
-def clearTempFile():
-    if os.path.exists(TEMP_FILE):
-        os.remove(TEMP_FILE)
-
-
-def speak(text):
-    try:
-        # grab tts file from google
-        command = ('wget --quiet --timeout=5 -U Mozilla -O "{}"'
-        ' "https://translate.google.com/translate_tts?ie=UTF-8&tl=en&client=tw-ob&q={}"').format(
-            TEMP_FILE,
-            text
-        )
-        exit_code = subprocess.call(command, shell=True)
-        # play tts file in vlc
-        play_command = 'mpg123 {}'.format(TEMP_FILE)
-        # if grabbing file failed, instead use espeak
-        if exit_code != 0:
-            play_command = 'espeak -v en-us+f3 -g 5 "{}"'.format(text)
-        # play sound
-        subprocess.call(play_command, shell=True)
-        # clear out temp file
-    finally:
-        clearTempFile()
 
 
 def getCelsius(kelvin):
@@ -120,33 +88,10 @@ def getInformation():
     )
 
 
-def handleEvent(key):
-    global latest_time
-    if key.time < latest_time:
-        return
-    elif key.name == '1':
-        time = getTime()
-        speak(time)
-    elif key.name == '2':
-        info = getInformation()
-        for section in info:
-            speak(section)
-    elif key.name == '3':
-        speak("Don't touch me there.")
-    elif key.name == '4':
-        subprocess.call(SHUTDOWN_COMMAND, shell=True)
-    latest_time = datetime.now().timestamp()
-
-
 def main():
-    try:
-        while True:
-            event = keyboard.read_event()
-            handleEvent(event)
-    except KeyboardInterrupt:
-        pass
-    finally:
-        clearTempFile()
+    print(getLocation())
+    print(getTime())
+    print(getInformation())
 
 
 if __name__ == '__main__':
