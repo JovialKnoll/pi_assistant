@@ -34,6 +34,7 @@ last_refresh_time = None
 
 
 def main():
+    global page_index
     refresh()
     try:
         while True:
@@ -47,8 +48,7 @@ def main():
                 page_index += 1
                 page_index %= PAGE_COUNT
                 refresh()
-            seconds_since_refresh = time.time() - last_refresh_time
-            if seconds_since_refresh > REFRESH_SECONDS:
+            if time.time() - last_refresh_time > REFRESH_SECONDS:
                 refresh()
     except KeyboardInterrupt:
         print()
@@ -56,6 +56,7 @@ def main():
 
 
 def refresh():
+    global last_refresh_time
     print(f"display page: {page_index}")
     display.fill(Adafruit_EPD.WHITE)
     display.display()
