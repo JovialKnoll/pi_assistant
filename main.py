@@ -29,7 +29,6 @@ display = Adafruit_SSD1680(122, 250, spi, cs_pin=ecs, dc_pin=dc, sramcs_pin=None
 
 def main():
     display.fill(Adafruit_EPD.WHITE)
-    display.image(image)
     display.display()
     
     try:
