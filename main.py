@@ -36,10 +36,11 @@ def main():
             up_switch.update()
             down_switch.update()
             if up_switch.fell:
-                print("fell")
-            if up_switch.rose:
-                print("rose")
+                print("up pressed")
+            if down_switch.fell:
+                print("down pressed")
     except KeyboardInterrupt:
+        print()
         print("exiting")
 
 
