@@ -5,11 +5,56 @@ import os
 import json
 import urllib.parse
 import urllib.request
+import digitalio
+import busio
+import board
 from datetime import datetime
 
 from pytz import timezone
+from PIL import Image, ImageDraw, ImageFont
+from adafruit_epd.epd import Adafruit_EPD
+from adafruit_epd.ssd1680 import Adafruit_SSD1680
 
 
+# pin setup
+spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
+ecs = digitalio.DigitalInOut(board.CE0)
+dc = digitalio.DigitalInOut(board.D22)
+rst = digitalio.DigitalInOut(board.D27)
+busy = digitalio.DigitalInOut(board.D17)
+
+# display init
+display = Adafruit_SSD1680(122, 250, spi, cs_pin=ecs, dc_pin=dc, sramcs_pin=None, rst_pin=rst, busy_pin=busy)
+
+# drawing vars
+small_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 16)
+medium_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 20)
+large_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 24)
+icon_font = ImageFont.truetype("./meteocons.ttf", 48)
+ICON_MAP = {
+    "01d": "B",
+    "01n": "C",
+    "02d": "H",
+    "02n": "I",
+    "03d": "N",
+    "03n": "N",
+    "04d": "Y",
+    "04n": "Y",
+    "09d": "Q",
+    "09n": "Q",
+    "10d": "R",
+    "10n": "R",
+    "11d": "Z",
+    "11n": "Z",
+    "13d": "W",
+    "13n": "W",
+    "50d": "J",
+    "50n": "K",
+}
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+
+# consts setup
 SRC_DIRECTORY = os.path.dirname(__file__)
 KEY_FILE = os.path.join(SRC_DIRECTORY, 'keys.json')
 KEY_IPINFO = 'ipinfo'
@@ -92,6 +137,11 @@ def main():
     print(getLocation())
     print(getTime())
     print(getInformation())
+    display.fill(Adafruit_EPD.WHITE)
+    image = Image.new("RGB", (display.width, display.height), color=WHITE)
+    draw = ImageDraw.Draw(image)
+    display.image(image)
+    display.display()
 
 
 if __name__ == '__main__':
