@@ -56,7 +56,7 @@ def main():
 
 
 def refresh():
-    print("display page: " + page_index)
+    print(f"display page: {page_index}")
     display.fill(Adafruit_EPD.WHITE)
     display.display()
     last_refresh_time = time.time()
