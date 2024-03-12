@@ -15,6 +15,7 @@ from PIL import ImageChops
 import constants
 import renderer
 
+
 # display
 spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 ecs = digitalio.DigitalInOut(board.CE0)
@@ -32,7 +33,12 @@ down_button = digitalio.DigitalInOut(board.D5)
 down_button.switch_to_input()
 down_switch = Debouncer(down_button)
 
-PAGE_COUNT = 3
+# pages
+pages = (
+    (renderer.get_page_0, 10 * 60),
+    (renderer.get_page_1, 1 * 60),
+    (renderer.get_page_2, 5 * 60),
+)
 
 
 class ImageThread(threading.Thread):
@@ -55,12 +61,12 @@ class ImageThread(threading.Thread):
 
 
 def main():
-    images = [None] * PAGE_COUNT
-    refreshes = [True] * PAGE_COUNT
-    threads = []
-    threads.append(ImageThread(images, refreshes, 0, renderer.get_page_0, 10 * 60))
-    threads.append(ImageThread(images, refreshes, 1, renderer.get_page_1, 1 * 60))
-    threads.append(ImageThread(images, refreshes, 2, renderer.get_page_2, 5 * 60))
+    images = [None] * len(pages)
+    refreshes = [True] * len(pages)
+    threads = [
+        ImageThread(images, refreshes, i, page[0], page[1])
+        for i, page in enumerate(pages)
+    ]
     for thread in threads:
         thread.start()
     page_index = 0
@@ -70,11 +76,11 @@ def main():
         down_switch.update()
         if up_switch.fell:
             page_index -= 1
-            page_index %= PAGE_COUNT
+            page_index %= len(pages)
             refreshes[page_index] = True
         if down_switch.fell:
             page_index += 1
-            page_index %= PAGE_COUNT
+            page_index %= len(pages)
             refreshes[page_index] = True
         if refreshes[page_index] and images[page_index]:
             print(f"displaying page: {page_index}")
