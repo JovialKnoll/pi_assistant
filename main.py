@@ -5,6 +5,7 @@ import time
 import busio
 import board
 import digitalio
+import threading
 
 from adafruit_debouncer import Debouncer
 from adafruit_epd.epd import Adafruit_EPD
@@ -28,41 +29,65 @@ down_switch = Debouncer(down_button)
 display = Adafruit_SSD1680(122, 250, spi, cs_pin=ecs, dc_pin=dc, sramcs_pin=None, rst_pin=rst, busy_pin=busy)
 
 PAGE_COUNT = 2
-page_index = 0
 REFRESH_SECONDS = 10 * 60
-last_refresh_time = None
+
+class ImageThread(threading.Thread):
+    def __init__(self, images, refreshes, thread_id, get_image, delay):
+        super(ImageThread, self).__init__(daemon=True)
+        self.images = images
+        self.refreshes = refreshes
+        self.thread_id = thread_id
+        self.get_image = get_image
+        self.delay = delay
+
+    def run(self):
+        #image = get_image()
+        #compare image to self.images[self.id], if there is a difference:
+        #    self.images[self.thread_id] = image
+        #    self.locks[self.thread_id].acquire()
+        #    self.refreshes[self.thread_id] = True
+        #    self.locks[self.thread_id].release()
+        time.sleep(self.delay)
+
+
+def dummy():
+    pass
 
 
 def main():
-    global page_index
-    refresh()
-    try:
-        while True:
-            up_switch.update()
-            down_switch.update()
-            if up_switch.fell:
-                page_index -= 1
-                page_index %= PAGE_COUNT
-                refresh()
-            if down_switch.fell:
-                page_index += 1
-                page_index %= PAGE_COUNT
-                refresh()
-            if time.time() - last_refresh_time > REFRESH_SECONDS:
-                refresh()
-    except KeyboardInterrupt:
-        print()
-        print("exiting")
+    images = [None] * PAGE_COUNT
+    refreshes = [True] * PAGE_COUNT
+    #locks = [threading.Lock()] * PAGE_COUNT
+    threads = []
+    threads.append(ImageThread(images, refreshes, 0, dummy, 10 * 60))
+    threads.append(ImageThread(images, refreshes, 1, dummy, 1 * 60))
+    for thread in threads:
+        thread.start()
+    page_index = 0
 
-
-def refresh():
-    global last_refresh_time
-    print(f"display page: {page_index}")
-    display.fill(Adafruit_EPD.WHITE)
-    display.display()
-    last_refresh_time = time.time()
+    while True:
+        up_switch.update()
+        down_switch.update()
+        if up_switch.fell:
+            page_index -= 1
+            page_index %= PAGE_COUNT
+            refreshes[page_index] = True
+        if down_switch.fell:
+            page_index += 1
+            page_index %= PAGE_COUNT
+            refreshes[page_index] = True
+        if refreshes[page_index]:
+            # also check if display can be refreshed
+            print(f"display page: {page_index}")
+            display.fill(Adafruit_EPD.WHITE)
+            display.display()
+            refreshes[page_index] = False
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print()
+        print("exiting")
 sys.exit()
