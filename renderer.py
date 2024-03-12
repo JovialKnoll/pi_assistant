@@ -10,21 +10,9 @@ import busio
 import board
 from datetime import datetime
 
-from pytz import timezone
 from PIL import Image, ImageDraw, ImageFont
-from adafruit_epd.epd import Adafruit_EPD
-from adafruit_epd.ssd1680 import Adafruit_SSD1680
 
-
-# pin setup
-spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
-ecs = digitalio.DigitalInOut(board.CE0)
-dc = digitalio.DigitalInOut(board.D22)
-rst = digitalio.DigitalInOut(board.D27)
-busy = digitalio.DigitalInOut(board.D17)
-
-# display init
-display = Adafruit_SSD1680(122, 250, spi, cs_pin=ecs, dc_pin=dc, sramcs_pin=None, rst_pin=rst, busy_pin=busy)
+import constants
 
 # drawing vars
 small_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 16)
@@ -54,7 +42,6 @@ ICON_MAP = {
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
-# consts setup
 SRC_DIRECTORY = os.path.dirname(__file__)
 KEY_FILE = os.path.join(SRC_DIRECTORY, 'keys.json')
 KEY_IPINFO = 'ipinfo'
@@ -133,17 +120,50 @@ def getInformation():
     )
 
 
-def main():
-    print(getLocation())
-    print(getTime())
-    print(getInformation())
-    display.fill(Adafruit_EPD.WHITE)
-    image = Image.new("RGB", (display.width, display.height), color=WHITE)
+def get_blank_image():
+    return Image.new("RGB", (constants.WIDTH, constants.HEIGHT), color=WHITE)
+
+
+def get_page_0():
+    image = get_blank_image()
     draw = ImageDraw.Draw(image)
-    display.image(image)
-    display.display()
+    draw.text(
+        (0, 0), "page 0", font=medium_font, fill=BLACK,
+    )
+    draw.text(
+        (50, 50), "page 0", font=medium_font, fill=BLACK,
+    )
+    draw.text(
+        (100, 100), "page 0", font=medium_font, fill=BLACK,
+    )
+    return image
 
 
-if __name__ == '__main__':
-    main()
-sys.exit()
+def get_page_1():
+    image = get_blank_image()
+    draw = ImageDraw.Draw(image)
+    draw.text(
+        (10, 10), "page 1", font=medium_font, fill=BLACK,
+    )
+    draw.text(
+        (60, 60), "page 1", font=medium_font, fill=BLACK,
+    )
+    draw.text(
+        (110, 110), "page 1", font=medium_font, fill=BLACK,
+    )
+    return image
+
+
+def get_page_2():
+    image = get_blank_image()
+    draw = ImageDraw.Draw(image)
+    draw.text(
+        (20, 20), "page 2", font=medium_font, fill=BLACK,
+    )
+    draw.text(
+        (70, 70), "page 2", font=medium_font, fill=BLACK,
+    )
+    draw.text(
+        (120, 120), "page 2", font=medium_font, fill=BLACK,
+    )
+    return image
