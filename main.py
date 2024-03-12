@@ -76,7 +76,7 @@ def main():
             page_index += 1
             page_index %= PAGE_COUNT
             refreshes[page_index] = True
-        if refreshes[page_index]:
+        if refreshes[page_index] and images[page_index]:
             print(f"displaying page: {page_index}")
             display.image(images[page_index])
             display.display()
