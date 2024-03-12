@@ -51,13 +51,14 @@ class ImageThread(threading.Thread):
         self.delay = delay
 
     def run(self):
-        image = self.get_image()
-        print(f"got image: {self.thread_id}")
-        if not self.images[self.thread_id] or ImageChops.difference(self.images[self.thread_id], image).getbbox():
-            self.images[self.thread_id] = image
-            self.refreshes[self.thread_id] = True
-            print(f"set image: {self.thread_id}")
-        time.sleep(self.delay)
+        while True:
+            image = self.get_image()
+            print(f"got image: {self.thread_id}")
+            if not self.images[self.thread_id] or ImageChops.difference(self.images[self.thread_id], image).getbbox():
+                self.images[self.thread_id] = image
+                self.refreshes[self.thread_id] = True
+                print(f"set image: {self.thread_id}")
+            time.sleep(self.delay)
 
 
 def main():
