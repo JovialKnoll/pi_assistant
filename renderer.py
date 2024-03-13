@@ -43,17 +43,18 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
 SRC_DIRECTORY = os.path.dirname(__file__)
-KEY_FILE = os.path.join(SRC_DIRECTORY, 'keys.json')
-KEY_IPINFO = 'ipinfo'
-KEY_OPENWEATHERMAP = 'openweathermap'
-keys = None
-with open(KEY_FILE) as file:
-    keys = json.load(file)
+CONFIG_FILE = os.path.join(SRC_DIRECTORY, 'config.json')
+KEY_IPINFO = 'key_ipinfo'
+KEY_OPENWEATHERMAP = 'key_openweathermap'
+CONFIG_CITY = 'config_city'
+config = None
+with open(CONFIG_FILE) as file:
+    config = json.load(file)
 
 
 def _get_weather(location):
     url = 'https://api.openweathermap.org/data/2.5/weather?appid={}&q={}'.format(
-        keys[KEY_OPENWEATHERMAP],
+        config[KEY_OPENWEATHERMAP],
         urllib.parse.quote(location)
     )
     request = urllib.request.Request(url)
@@ -69,7 +70,7 @@ def _get_weather(location):
 
 def getLocation():
     url = 'https://ipinfo.io/?token={}'.format(
-        keys[KEY_IPINFO]
+        config[KEY_IPINFO]
     )
     request = urllib.request.Request(url)
     response = urllib.request.urlopen(request)
