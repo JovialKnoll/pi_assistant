@@ -106,7 +106,7 @@ def _get_fahrenheit(celsius):
 
 
 def _weather():
-    weather = _get_weather("Manhattan, US")
+    weather = _get_weather(config[CONFIG_CITY])
     weather_icon = ICON_MAP[weather["weather"][0]["icon"]]
     city_name = weather["name"] + ", " + weather["sys"]["country"]
     main = weather["weather"][0]["main"]
