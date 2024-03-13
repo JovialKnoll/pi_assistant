@@ -10,7 +10,6 @@ import threading
 from adafruit_debouncer import Debouncer
 from adafruit_epd.epd import Adafruit_EPD
 from adafruit_epd.ssd1680 import Adafruit_SSD1680
-from PIL import ImageChops
 
 import constants
 import renderer
@@ -33,40 +32,31 @@ down_button = digitalio.DigitalInOut(board.D5)
 down_button.switch_to_input()
 down_switch = Debouncer(down_button)
 
-# pages
-pages = (
-    (renderer.get_page_0, 10 * 60),
-    (renderer.get_page_1, 1 * 60),
-    (renderer.get_page_2, 5 * 60),
-)
-
 
 class ImageThread(threading.Thread):
-    def __init__(self, images, refreshes, thread_id, get_image, delay):
+    def __init__(self, images, refreshes, thread_id):
         super(ImageThread, self).__init__(daemon=True)
         self.images = images
         self.refreshes = refreshes
         self.thread_id = thread_id
-        self.get_image = get_image
-        self.delay = delay
 
     def run(self):
         while True:
-            image = self.get_image()
+            image, delay = renderer.get_page(self.thread_id, self.images[self.thread_id])
             print(f"got image: {self.thread_id}")
-            if not self.images[self.thread_id] or ImageChops.difference(self.images[self.thread_id], image).getbbox():
+            if image:
                 self.images[self.thread_id] = image
                 self.refreshes[self.thread_id] = True
                 print(f"set image: {self.thread_id}")
-            time.sleep(self.delay)
+            time.sleep(delay)
 
 
 def main():
-    images = [None] * len(pages)
-    refreshes = [True] * len(pages)
+    images = [None] * renderer.page_count
+    refreshes = [False] * renderer.page_count
     threads = [
-        ImageThread(images, refreshes, i, page[0], page[1])
-        for i, page in enumerate(pages)
+        ImageThread(images, refreshes, i)
+        for i in range(renderer.page_count)
     ]
     for thread in threads:
         thread.start()
@@ -77,11 +67,11 @@ def main():
         down_switch.update()
         if up_switch.fell:
             page_index -= 1
-            page_index %= len(pages)
+            page_index %= renderer.page_count
             refreshes[page_index] = True
         if down_switch.fell:
             page_index += 1
-            page_index %= len(pages)
+            page_index %= renderer.page_count
             refreshes[page_index] = True
         if refreshes[page_index] and images[page_index]:
             print(f"displaying page: {page_index}")
@@ -96,4 +86,5 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         print()
         print("exiting")
+        print()
 sys.exit()

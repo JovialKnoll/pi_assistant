@@ -10,7 +10,7 @@ import busio
 import board
 from datetime import datetime
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageChops, ImageDraw, ImageFont
 
 import constants
 
@@ -124,7 +124,7 @@ def get_blank_image():
     return Image.new("RGB", (constants.WIDTH, constants.HEIGHT), color=WHITE)
 
 
-def get_page_0():
+def _get_page_0():
     image = get_blank_image()
     draw = ImageDraw.Draw(image)
     draw.text(
@@ -139,7 +139,7 @@ def get_page_0():
     return image
 
 
-def get_page_1():
+def _get_page_1():
     image = get_blank_image()
     draw = ImageDraw.Draw(image)
     draw.text(
@@ -154,7 +154,7 @@ def get_page_1():
     return image
 
 
-def get_page_2():
+def _get_page_2():
     image = get_blank_image()
     draw = ImageDraw.Draw(image)
     draw.text(
@@ -167,3 +167,21 @@ def get_page_2():
         (120, 120), "page 2", font=medium_font, fill=BLACK,
     )
     return image
+
+
+_pages = (
+    (_get_page_0, 10 * 60),
+    (_get_page_1, 1 * 60),
+    (_get_page_2, 5 * 60),
+)
+
+
+page_count = len(_pages)
+
+
+def get_page(page_index, current_image):
+    new_image = _pages[page_index][0]()
+    delay = _pages[page_index][1]
+    if not current_image or ImageChops.difference(current_image, new_image).getbbox():
+        return new_image, delay
+    return None, delay
