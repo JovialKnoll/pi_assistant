@@ -117,6 +117,7 @@ def _weather():
     description = description[0].upper() + description[1:]
 
     image = _get_blank_image()
+    draw = ImageDraw.Draw(image)
     (font_width, font_height) = icon_font.getsize(weather_icon)
     xy = (
         constants.WIDTH // 2 - font_width // 2,
