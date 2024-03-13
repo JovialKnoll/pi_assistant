@@ -111,7 +111,7 @@ def _weather():
     main = weather["weather"][0]["main"]
     temp_c = _get_celsius(weather["main"]["temp"])
     #temp_f = _get_fahrenheit(temp_c)
-    temperature = "%d °C" % temperature
+    temperature = "%d °C" % temp_c
     #temperature = "%d °F" % temp_f
     description = weather["weather"][0]["description"]
     description = description[0].upper() + description[1:]
