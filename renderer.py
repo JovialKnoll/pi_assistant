@@ -51,39 +51,20 @@ with open(KEY_FILE) as file:
     keys = json.load(file)
 
 
-def getCelsius(kelvin):
-    return kelvin - 273.15
-
-
-def getFahrenheit(celsius):
-    return (celsius * 9/5) + 32
-
-
-def getWeather(location):
+def _get_weather(location):
     url = 'https://api.openweathermap.org/data/2.5/weather?appid={}&q={}'.format(
         keys[KEY_OPENWEATHERMAP],
         urllib.parse.quote(location)
     )
     request = urllib.request.Request(url)
     response = urllib.request.urlopen(request)
+    if response.getcode() != 200:
+        return None
     content = response.read()
-    weather_dict = json.loads(content)
-    if weather_dict['cod'] == '404':
-        return "I wasn't able to figure out the weather."
-    temp_k = float(weather_dict['main']['temp'])
-    temp_c = getCelsius(temp_k)
-    temp_f = getFahrenheit(temp_c)
-    return """
-The temperature is {} degrees Celsius, {} degrees Fahrenheit.
-The humidity is {} percent.
-Wind speed is {} meters per second.
-The weather is described as {}.""".format(
-        round(temp_c, 1),
-        round(temp_f, 1),
-        weather_dict['main']['humidity'],
-        weather_dict['wind']['speed'],
-        weather_dict['weather'][0]['description']
-    )
+    weather = json.loads(content)
+    if weather['cod'] == '404':
+        return None
+    return weather
 
 
 def getLocation():
@@ -111,21 +92,23 @@ def getTime():
     return "It is now {}".format(time_str)
 
 
-def getInformation():
-    location, time_zone = getLocation()
-    weather = getWeather(location)
-    return (
-        "You are in or near {}.".format(location),
-        weather,
-    )
-
-
-def get_blank_image():
+def _get_blank_image():
     return Image.new("RGB", (constants.WIDTH, constants.HEIGHT), color=WHITE)
 
 
-def _get_page_0():
-    image = get_blank_image()
+def _get_celsius(kelvin):
+    return kelvin - 273.15
+
+
+def _get_fahrenheit(celsius):
+    return (celsius * 9/5) + 32
+
+
+def _weather():
+    weather = get_weather("Manhattan, US")
+
+
+    image = _get_blank_image()
     draw = ImageDraw.Draw(image)
     draw.text(
         (0, 0), "page 0", font=medium_font, fill=BLACK,
@@ -140,7 +123,7 @@ def _get_page_0():
 
 
 def _get_page_1():
-    image = get_blank_image()
+    image = _get_blank_image()
     draw = ImageDraw.Draw(image)
     draw.text(
         (10, 10), "page 1", font=medium_font, fill=BLACK,
@@ -155,7 +138,7 @@ def _get_page_1():
 
 
 def _get_page_2():
-    image = get_blank_image()
+    image = _get_blank_image()
     draw = ImageDraw.Draw(image)
     draw.text(
         (20, 20), "page 2", font=medium_font, fill=BLACK,
@@ -170,9 +153,9 @@ def _get_page_2():
 
 
 _pages = (
-    (_get_page_0, 10 * 60),
-    (_get_page_1, 1 * 60),
-    (_get_page_2, 5 * 60),
+    (_weather, 10 * 60),
+    (_get_page_1, 10 * 60),
+    (_get_page_2, 10 * 60),
 )
 
 
