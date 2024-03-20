@@ -1,18 +1,14 @@
 #!/usr/bin/env python3
 
-import sys
-import os
 import json
 import urllib.parse
 import urllib.request
-import digitalio
-import busio
-import board
 from datetime import datetime
 
 from PIL import Image, ImageChops, ImageDraw, ImageFont
 
 import constants
+import config
 
 # drawing vars
 small_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 16)
@@ -42,19 +38,10 @@ ICON_MAP = {
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
-SRC_DIRECTORY = os.path.dirname(__file__)
-CONFIG_FILE = os.path.join(SRC_DIRECTORY, 'config.json')
-KEY_IPINFO = 'key_ipinfo'
-KEY_OPENWEATHERMAP = 'key_openweathermap'
-CONFIG_CITY = 'config_city'
-config = None
-with open(CONFIG_FILE) as file:
-    config = json.load(file)
-
 
 def _get_weather(location):
     url = 'https://api.openweathermap.org/data/2.5/weather?appid={}&q={}'.format(
-        config[KEY_OPENWEATHERMAP],
+        config.KEY_OPENWEATHERMAP,
         urllib.parse.quote(location)
     )
     request = urllib.request.Request(url)
@@ -70,7 +57,7 @@ def _get_weather(location):
 
 def getLocation():
     url = 'https://ipinfo.io/?token={}'.format(
-        config[KEY_IPINFO]
+        config.KEY_IPINFO
     )
     request = urllib.request.Request(url)
     response = urllib.request.urlopen(request)
@@ -106,7 +93,7 @@ def _get_fahrenheit(celsius):
 
 
 def _weather():
-    weather = _get_weather(config[CONFIG_CITY])
+    weather = _get_weather(config.CONFIG_CITY)
     weather_icon = ICON_MAP[weather["weather"][0]["icon"]]
     city_name = weather["name"] + ", " + weather["sys"]["country"]
     main = weather["weather"][0]["main"]
