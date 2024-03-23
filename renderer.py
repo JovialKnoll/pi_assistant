@@ -51,33 +51,46 @@ def _weather():
     city_name = weather["name"] + ", " + weather["sys"]["country"]
     main = weather["weather"][0]["main"]
     temp_c = _get_celsius(weather["main"]["temp"])
-    #temp_f = _get_fahrenheit(temp_c)
-    temperature = "%d °C" % temp_c
-    #temperature = "%d °F" % temp_f
+    temp_f = _get_fahrenheit(temp_c)
+    temperature_c = "%d °C" % round(temp_c)
+    temperature_f = "%d °F" % round(temp_f)
     description = weather["weather"][0]["description"]
     description = description[0].upper() + description[1:]
 
     image = _get_blank_image()
     draw = ImageDraw.Draw(image)
+
+    draw.text((0, 0), city_name, font=medium_font, fill=BLACK)
+
     (font_width, font_height) = icon_font.getsize(weather_icon)
     xy = (
         config.WIDTH // 2 - font_width // 2,
-        config.HEIGHT // 2 - font_height // 2 - 5,
+        config.HEIGHT // 2 - font_height // 2,
     )
     draw.text(xy, weather_icon, font=icon_font, fill=BLACK)
-    draw.text((5, 5), city_name, font=medium_font, fill=BLACK)
-    (font_width, font_height) = large_font.getsize(main)
-    xy = (5, config.HEIGHT - font_height * 2)
-    draw.text(xy, main, font=large_font, fill=BLACK)
+
     (font_width, font_height) = small_font.getsize(description)
-    xy = (5, config.HEIGHT - font_height - 5)
+    xy = (0, config.HEIGHT - font_height)
     draw.text(xy, description, font=small_font, fill=BLACK)
-    (font_width, font_height) = large_font.getsize(temperature)
+
+    (font_width, font_height) = large_font.getsize(main)
+    xy = (0, xy[1] - font_height)
+    draw.text(xy, main, font=large_font, fill=BLACK)
+
+    (font_width, font_height) = large_font.getsize(temperature_c)
     xy = (
-        config.WIDTH - font_width - 5,
-        config.HEIGHT - font_height * 2,
+        config.WIDTH - font_width,
+        config.HEIGHT - font_height,
     )
-    draw.text(xy, temperature, font=large_font, fill=BLACK)
+    draw.text(xy, temperature_c, font=large_font, fill=BLACK)
+
+    (font_width, font_height) = large_font.getsize(temperature_f)
+    xy = (
+        config.WIDTH - font_width,
+        xy[1] - font_height,
+    )
+    draw.text(xy, temperature_f, font=large_font, fill=BLACK)
+
     return image
 
 
