@@ -1,14 +1,8 @@
-#!/usr/bin/env python3
-
-import json
-import urllib.parse
-import urllib.request
-from datetime import datetime
-
 from PIL import Image, ImageChops, ImageDraw, ImageFont
 
-import constants
 import config
+import data
+
 
 # drawing vars
 small_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 16)
@@ -39,49 +33,8 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
 
-def _get_weather(location):
-    url = 'https://api.openweathermap.org/data/2.5/weather?appid={}&q={}'.format(
-        config.KEY_OPENWEATHERMAP,
-        urllib.parse.quote(location)
-    )
-    request = urllib.request.Request(url)
-    response = urllib.request.urlopen(request)
-    if response.getcode() != 200:
-        return None
-    content = response.read()
-    weather = json.loads(content)
-    if weather['cod'] == '404':
-        return None
-    return weather
-
-
-def getLocation():
-    url = 'https://ipinfo.io/?token={}'.format(
-        config.KEY_IPINFO
-    )
-    request = urllib.request.Request(url)
-    response = urllib.request.urlopen(request)
-    content = response.read()
-    ipinfo_dict = json.loads(content)
-    return (
-        '{}, {}'.format(
-            ipinfo_dict['city'],
-            ipinfo_dict['country']
-        ),
-        ipinfo_dict['timezone'],
-    )
-
-
-def getTime():
-    location, time_zone = getLocation()
-    time_utc = datetime.now(timezone('UTC'))
-    time_here = time_utc.astimezone(timezone(time_zone))
-    time_str = time_here.strftime('%I:%M%p')
-    return "It is now {}".format(time_str)
-
-
 def _get_blank_image():
-    return Image.new("RGB", (constants.WIDTH, constants.HEIGHT), color=WHITE)
+    return Image.new("RGB", (config.WIDTH, config.HEIGHT), color=WHITE)
 
 
 def _get_celsius(kelvin):
@@ -93,7 +46,7 @@ def _get_fahrenheit(celsius):
 
 
 def _weather():
-    weather = _get_weather(config.CONFIG_CITY)
+    weather = data.get_weather(config.CONFIG_CITY)
     weather_icon = ICON_MAP[weather["weather"][0]["icon"]]
     city_name = weather["name"] + ", " + weather["sys"]["country"]
     main = weather["weather"][0]["main"]
@@ -108,21 +61,21 @@ def _weather():
     draw = ImageDraw.Draw(image)
     (font_width, font_height) = icon_font.getsize(weather_icon)
     xy = (
-        constants.WIDTH // 2 - font_width // 2,
-        constants.HEIGHT // 2 - font_height // 2 - 5,
+        config.WIDTH // 2 - font_width // 2,
+        config.HEIGHT // 2 - font_height // 2 - 5,
     )
     draw.text(xy, weather_icon, font=icon_font, fill=BLACK)
     draw.text((5, 5), city_name, font=medium_font, fill=BLACK)
     (font_width, font_height) = large_font.getsize(main)
-    xy = (5, constants.HEIGHT - font_height * 2)
+    xy = (5, config.HEIGHT - font_height * 2)
     draw.text(xy, main, font=large_font, fill=BLACK)
     (font_width, font_height) = small_font.getsize(description)
-    xy = (5, constants.HEIGHT - font_height - 5)
+    xy = (5, config.HEIGHT - font_height - 5)
     draw.text(xy, description, font=small_font, fill=BLACK)
     (font_width, font_height) = large_font.getsize(temperature)
     xy = (
-        constants.WIDTH - font_width - 5,
-        constants.HEIGHT - font_height * 2,
+        config.WIDTH - font_width - 5,
+        config.HEIGHT - font_height * 2,
     )
     draw.text(xy, temperature, font=large_font, fill=BLACK)
     return image
