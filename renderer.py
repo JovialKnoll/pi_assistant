@@ -93,14 +93,19 @@ def _display_weather(weather):
     return image
 
 
-def _get_home_weather():
-    weather = data.get_weather(config.CONFIG_CITY_HOME)
+def _get_weather_display(location):
+    weather = data.get_weather(location)
+    if not weather:
+        return None
     return _display_weather(weather)
+
+
+def _get_home_weather():
+    return _get_weather_display(config.CONFIG_CITY_HOME)
 
 
 def _get_work_weather():
-    weather = data.get_weather(config.CONFIG_CITY_WORK)
-    return _display_weather(weather)
+    return _get_weather_display(config.CONFIG_CITY_WORK)
 
 
 def _get_page_2():
