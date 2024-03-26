@@ -9,7 +9,8 @@ with open(_CONFIG_FILE) as file:
 
 KEY_IPINFO = _config['key_ipinfo']
 KEY_OPENWEATHERMAP = _config['key_openweathermap']
-CONFIG_CITY = _config['config_city']
+CONFIG_CITY_HOME = _config['config_city_home']
+CONFIG_CITY_WORK = _config['config_city_work']
 
 WIDTH = 250
 HEIGHT = 122

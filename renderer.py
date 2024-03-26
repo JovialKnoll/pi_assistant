@@ -45,8 +45,7 @@ def _get_fahrenheit(celsius):
     return (celsius * 9/5) + 32
 
 
-def _weather():
-    weather = data.get_weather(config.CONFIG_CITY)
+def _display_weather(weather):
     weather_icon = ICON_MAP[weather["weather"][0]["icon"]]
     city_name = weather["name"] + ", " + weather["sys"]["country"]
     main = weather["weather"][0]["main"]
@@ -94,19 +93,14 @@ def _weather():
     return image
 
 
-def _get_page_1():
-    image = _get_blank_image()
-    draw = ImageDraw.Draw(image)
-    draw.text(
-        (10, 10), "page 1", font=medium_font, fill=BLACK,
-    )
-    draw.text(
-        (60, 60), "page 1", font=medium_font, fill=BLACK,
-    )
-    draw.text(
-        (110, 110), "page 1", font=medium_font, fill=BLACK,
-    )
-    return image
+def _get_home_weather():
+    weather = data.get_weather(config.CONFIG_CITY_HOME)
+    return _display_weather(weather)
+
+
+def _get_work_weather():
+    weather = data.get_weather(config.CONFIG_CITY_WORK)
+    return _display_weather(weather)
 
 
 def _get_page_2():
@@ -125,8 +119,8 @@ def _get_page_2():
 
 
 _pages = (
-    (_weather, 10 * 60),
-    (_get_page_1, 10 * 60),
+    (_get_home_weather, 10 * 60),
+    (_get_work_weather, 10 * 60),
     (_get_page_2, 10 * 60),
 )
 
@@ -137,6 +131,7 @@ page_count = len(_pages)
 def get_page(page_index, current_image):
     new_image = _pages[page_index][0]()
     delay = _pages[page_index][1]
-    if not current_image or ImageChops.difference(current_image, new_image).getbbox():
+    if not current_image \
+    or (new_image and ImageChops.difference(current_image, new_image).getbbox()):
         return new_image, delay
     return None, delay
