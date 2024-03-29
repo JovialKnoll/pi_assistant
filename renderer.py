@@ -45,24 +45,18 @@ def _get_fahrenheit(celsius):
     return (celsius * 9/5) + 32
 
 
-def _display_weather(weather):
+def _display_weather(weather, label):
     temp_c = _get_celsius(weather["main"]["temp"])
     temp_f = _get_fahrenheit(temp_c)
+    feels_like_c = _get_celsius(weather["main"]["feels_like"])
+    feels_like_f = _get_fahrenheit(feels_like_c)
 
     image = _get_blank_image()
     draw = ImageDraw.Draw(image)
 
-    city_name = weather["name"]
-    draw.text((0, 0), city_name, font=medium_font, fill=BLACK)
-
-    weather_icon = ICON_MAP[weather["weather"][0]["icon"]]
-    (font_width, font_height) = icon_font.getsize(weather_icon)
-    xy = (
-        config.WIDTH // 2 - font_width // 2,
-        config.HEIGHT // 2 - font_height // 2,
-    )
-    draw.text(xy, weather_icon, font=icon_font, fill=BLACK)
-
+    draw.text((0, 0), label, font=medium_font, fill=BLACK)
+    (label_font_width, label_font_height) = medium_font.getsize(label)
+    
     description = weather["weather"][0]["description"]
     description = description[0].upper() + description[1:]
     (font_width, font_height) = small_font.getsize(description)
@@ -74,38 +68,56 @@ def _display_weather(weather):
     xy = (0, xy[1] - font_height)
     draw.text(xy, main, font=large_font, fill=BLACK)
 
+    weather_icon = ICON_MAP[weather["weather"][0]["icon"]]
+    (font_width, font_height) = icon_font.getsize(weather_icon)
+    xy = (0, label_font_height + (xy[1] - label_font_height) // 2 - font_height // 2)
+    draw.text(xy, weather_icon, font=icon_font, fill=BLACK)
+
     temperature_c = "%d °C" % round(temp_c)
     (font_width, font_height) = large_font.getsize(temperature_c)
-    xy = (
-        config.WIDTH - font_width,
-        config.HEIGHT - font_height,
-    )
+    xy = (config.WIDTH - font_width, 0)
     draw.text(xy, temperature_c, font=large_font, fill=BLACK)
+    old_font_height = font_height
 
     temperature_f = "%d °F" % round(temp_f)
     (font_width, font_height) = large_font.getsize(temperature_f)
-    xy = (
-        config.WIDTH - font_width,
-        xy[1] - font_height,
-    )
+    xy = (config.WIDTH - font_width, xy[1] + old_font_height)
+    draw.text(xy, temperature_f, font=large_font, fill=BLACK)
+    old_font_height = font_height
+
+    feels_like = "feels like"
+    (font_width, font_height) = small_font.getsize(feels_like)
+    xy = (config.WIDTH - font_width, xy[1] + old_font_height)
+    draw.text(xy, feels_like, font=small_font, fill=BLACK)
+    old_font_height = font_height
+
+    temperature_c = "%d °C" % round(feels_like_c)
+    (font_width, font_height) = large_font.getsize(temperature_c)
+    xy = (config.WIDTH - font_width, xy[1] + old_font_height)
+    draw.text(xy, temperature_c, font=large_font, fill=BLACK)
+    old_font_height = font_height
+
+    temperature_f = "%d °F" % round(feels_like_f)
+    (font_width, font_height) = large_font.getsize(temperature_f)
+    xy = (config.WIDTH - font_width, xy[1] + old_font_height)
     draw.text(xy, temperature_f, font=large_font, fill=BLACK)
 
     return image
 
 
-def _get_weather_display(location):
+def _get_weather_display(location, label):
     weather = data.get_weather(location)
     if not weather:
         return None
-    return _display_weather(weather)
+    return _display_weather(weather, label)
 
 
 def _get_home_weather():
-    return _get_weather_display(config.CONFIG_CITY_HOME)
+    return _get_weather_display(config.CONFIG_CITY_HOME, "Home")
 
 
 def _get_work_weather():
-    return _get_weather_display(config.CONFIG_CITY_WORK)
+    return _get_weather_display(config.CONFIG_CITY_WORK, "Work")
 
 
 def _get_page_2():
