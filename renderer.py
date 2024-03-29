@@ -88,8 +88,9 @@ def _display_weather(weather, label):
     old_font_height = max(old_font_height, font_height)
 
     feels_like = "feels like"
+    y = xy[1] + old_font_height
     (font_width, font_height) = small_font.getsize(feels_like)
-    xy = (config.WIDTH - font_width, xy[1] + old_font_height)
+    xy = (config.WIDTH - font_width, y)
     draw.text(xy, feels_like, font=small_font, fill=BLACK)
     old_font_height = font_height
 
@@ -97,11 +98,20 @@ def _display_weather(weather, label):
     temperature_c = "%d°C" % round(feels_like_c)
     (font_width, font_height) = large_font.getsize(temperature_c)
     xy = (config.WIDTH - font_width, y)
+    old_font_height = font_height
     draw.text(xy, temperature_c, font=large_font, fill=BLACK)
     temperature_f = "%d°F" % round(feels_like_f)
     (font_width, font_height) = large_font.getsize(temperature_f)
     xy = (config.WIDTH - font_width - _width_for_temp_c, y)
     draw.text(xy, temperature_f, font=large_font, fill=BLACK)
+    old_font_height = max(old_font_height, font_height)
+
+    y = xy[1] + old_font_height
+    humidity = "%d%%" % weather["main"]["humidity"]
+    (font_width, font_height) = large_font.getsize(humidity)
+    xy = (config.WIDTH - font_width, y)
+    draw.text(xy, humidity, font=large_font, fill=BLACK)
+    old_font_height = font_height
 
     return image
 
