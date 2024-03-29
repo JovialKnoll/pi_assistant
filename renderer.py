@@ -45,6 +45,9 @@ def _get_fahrenheit(celsius):
     return (celsius * 9/5) + 32
 
 
+_width_for_temp_c = large_font.getsize("000°C")[0]
+
+
 def _display_weather(weather, label):
     temp_c = _get_celsius(weather["main"]["temp"])
     temp_f = _get_fahrenheit(temp_c)
@@ -74,15 +77,15 @@ def _display_weather(weather, label):
     draw.text(xy, weather_icon, font=icon_font, fill=BLACK)
 
     temperature_c = "%d°C" % round(temp_c)
-    if len(temperature_c) <= 3:
-        temperature_c = " " + temperature_c
-    temperature_f = "%d°F" % round(temp_f)
-    temps = temperature_f + " " + temperature_c
-    (font_width, font_height) = large_font.getsize(temps)
+    (font_width, font_height) = large_font.getsize(temperature_c)
     xy = (config.WIDTH - font_width, 0)
-    draw.text(xy, temps, font=large_font, fill=BLACK)
+    draw.text(xy, temperature_c, font=large_font, fill=BLACK)
     old_font_height = font_height
-    # separate out C and F rendering, place F as though C is " 00°C"
+    temperature_f = "%d°F" % round(temp_f)
+    (font_width, font_height) = large_font.getsize(temperature_f)
+    xy = (config.WIDTH - font_width - _width_for_temp_c, 0)
+    draw.text(xy, temperature_f, font=large_font, fill=BLACK)
+    old_font_height = max(old_font_height, font_height)
 
     feels_like = "feels like"
     (font_width, font_height) = small_font.getsize(feels_like)
@@ -90,15 +93,15 @@ def _display_weather(weather, label):
     draw.text(xy, feels_like, font=small_font, fill=BLACK)
     old_font_height = font_height
 
+    y = xy[1] + old_font_height
     temperature_c = "%d°C" % round(feels_like_c)
-    if len(temperature_c) <= 3:
-        temperature_c = " " + temperature_c
+    (font_width, font_height) = large_font.getsize(temperature_c)
+    xy = (config.WIDTH - font_width, y)
+    draw.text(xy, temperature_c, font=large_font, fill=BLACK)
     temperature_f = "%d°F" % round(feels_like_f)
-    temps = temperature_f + " " + temperature_c
-    (font_width, font_height) = large_font.getsize(temps)
-    xy = (config.WIDTH - font_width, xy[1] + old_font_height)
-    draw.text(xy, temps, font=large_font, fill=BLACK)
-    old_font_height = font_height
+    (font_width, font_height) = large_font.getsize(temperature_f)
+    xy = (config.WIDTH - font_width - _width_for_temp_c, y)
+    draw.text(xy, temperature_f, font=large_font, fill=BLACK)
 
     return image
 
