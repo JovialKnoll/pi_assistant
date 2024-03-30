@@ -124,11 +124,11 @@ def _get_weather_display(location, label):
 
 
 def _get_home_weather():
-    return _get_weather_display(config.CONFIG_CITY_HOME, "Home")
+    return _get_weather_display(config.CONFIG_LATLONG_HOME, "Home")
 
 
 def _get_work_weather():
-    return _get_weather_display(config.CONFIG_CITY_WORK, "Work")
+    return _get_weather_display(config.CONFIG_LATLONG_WORK, "Work")
 
 
 def _get_page_2():
