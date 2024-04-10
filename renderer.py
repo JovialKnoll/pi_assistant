@@ -33,10 +33,6 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
 
-def _get_blank_image():
-    return Image.new("RGB", (config.WIDTH, config.HEIGHT), color=WHITE)
-
-
 def _get_celsius(kelvin):
     return kelvin - 273.15
 
@@ -55,7 +51,7 @@ def _display_weather(weather, label):
     feels_like_c = _get_celsius(weather["main"]["feels_like"])
     feels_like_f = _get_fahrenheit(feels_like_c)
 
-    image = _get_blank_image()
+    image = Image.new("RGB", (config.WIDTH, config.HEIGHT), color=WHITE)
     draw = ImageDraw.Draw(image)
 
     draw.text((0, 0), label, font=medium_font, fill=BLACK)
