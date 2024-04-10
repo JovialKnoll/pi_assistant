@@ -7,7 +7,6 @@ _config = None
 with open(_CONFIG_FILE) as file:
     _config = json.load(file)
 
-KEY_IPINFO = _config['key_ipinfo']
 KEY_OPENWEATHERMAP = _config['key_openweathermap']
 CONFIG_PAGES = _config['config_pages']
 
