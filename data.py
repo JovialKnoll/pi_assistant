@@ -6,11 +6,11 @@ from datetime import datetime
 import config
 
 
-def get_weather(latlong):
+def get_weather(lat, long):
     url = 'https://api.openweathermap.org/data/2.5/weather?appid={}&lat={}&lon={}'.format(
         config.KEY_OPENWEATHERMAP,
-        latlong[0],
-        latlong[1],
+        lat,
+        long,
     )
     request = urllib.request.Request(url)
     response = urllib.request.urlopen(request)
