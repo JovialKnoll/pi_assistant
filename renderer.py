@@ -33,10 +33,6 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
 
-def _get_blank_image():
-    return Image.new("RGB", (config.WIDTH, config.HEIGHT), color=WHITE)
-
-
 def _get_celsius(kelvin):
     return kelvin - 273.15
 
@@ -55,7 +51,7 @@ def _display_weather(weather, label):
     feels_like_c = _get_celsius(weather["main"]["feels_like"])
     feels_like_f = _get_fahrenheit(feels_like_c)
 
-    image = _get_blank_image()
+    image = Image.new("RGB", (config.WIDTH, config.HEIGHT), color=WHITE)
     draw = ImageDraw.Draw(image)
 
     draw.text((0, 0), label, font=medium_font, fill=BLACK)
@@ -118,49 +114,24 @@ def _display_weather(weather, label):
     return image
 
 
-def _get_weather_display(location, label):
-    weather = data.get_weather(location)
+def _get_weather_display(lat, long, label):
+    weather = data.get_weather(lat, long)
     if not weather:
         return None
     return _display_weather(weather, label)
 
 
-def _get_home_weather():
-    return _get_weather_display(config.CONFIG_LATLONG_HOME, "Home")
-
-
-def _get_work_weather():
-    return _get_weather_display(config.CONFIG_LATLONG_WORK, "Work")
-
-
-def _get_page_2():
-    image = _get_blank_image()
-    draw = ImageDraw.Draw(image)
-    draw.text(
-        (20, 20), "page 2", font=medium_font, fill=BLACK,
-    )
-    draw.text(
-        (70, 70), "page 2", font=medium_font, fill=BLACK,
-    )
-    draw.text(
-        (120, 120), "page 2", font=medium_font, fill=BLACK,
-    )
-    return image
-
-
-_pages = (
-    (_get_home_weather, 10 * 60),
-    (_get_work_weather, 10 * 60),
-    (_get_page_2, 10 * 60),
-)
-
-
-page_count = len(_pages)
+page_count = len(config.CONFIG_PAGES)
 
 
 def get_page(page_index, current_image):
-    new_image = _pages[page_index][0]()
-    delay = _pages[page_index][1]
+    page_config = config.CONFIG_PAGES[page_index]
+    new_image = _get_weather_display(
+        page_config['lat'],
+        page_config['long'],
+        page_config['label']
+    )
+    delay = page_config['delay']
     if not current_image \
     or (new_image and ImageChops.difference(current_image, new_image).getbbox()):
         return new_image, delay
