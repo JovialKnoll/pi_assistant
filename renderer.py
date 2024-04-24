@@ -109,7 +109,12 @@ def _display_weather(weather, label):
     (font_width, font_height) = large_font.getsize(humidity)
     xy = (config.WIDTH - font_width, old_font_y)
     draw.text(xy, humidity, font=large_font, fill=BLACK)
-    old_font_height = font_height
+    old_font_y = xy[1] + font_height
+
+    windspeed = "%dm/s" % weather["wind"]["speed"]
+    (font_width, font_height) = large_font.getsize(windspeed)
+    xy = (config.WIDTH - font_width, old_font_y)
+    draw.text(xy, windspeed, font=large_font, fill=BLACK)
 
     return image
 
