@@ -43,11 +43,9 @@ class ImageThread(threading.Thread):
     def run(self):
         while True:
             image, delay = renderer.get_page(self.thread_id, self.images[self.thread_id])
-            print(f"got image: {self.thread_id}")
             if image:
                 self.images[self.thread_id] = image
                 self.refreshes[self.thread_id] = True
-                print(f"set image: {self.thread_id}")
             time.sleep(delay)
 
 
@@ -74,7 +72,6 @@ def main():
             page_index %= renderer.page_count
             refreshes[page_index] = True
         if refreshes[page_index] and images[page_index]:
-            print(f"displaying page: {page_index}")
             display.image(images[page_index])
             display.display()
             refreshes[page_index] = False
@@ -84,7 +81,5 @@ if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
-        print()
-        print("exiting")
-        print()
+        pass
 sys.exit()
