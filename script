@@ -1,0 +1,2 @@
+#!/bin/bash
+cd ~/git/pi_assistant && python3 ~/git/pi_assistant/main.py
