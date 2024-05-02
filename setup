@@ -7,4 +7,4 @@ sudo apt autoremove -y;
 sudo pip3 install --upgrade pip;
 sudo pip3 install -r requirements.txt;
 echo "add the following to sudo crontab";
-echo "@reboot cd /home/pi/git/pi_assistant && python3 /home/pi/git/pi_assistant/main.py | at now + 1 minute";
+echo "@reboot echo '~/git/pi_assistant/script' | at now + 2 minutes";
